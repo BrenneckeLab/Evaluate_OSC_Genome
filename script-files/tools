@@ -1,0 +1,80 @@
+
+#!/bin/bash
+
+#preload all aliases
+#set -a to automatically export all functions
+set -a
+
+#tools from basicTools
+seqkit() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app seqkit "$@"; }
+bowtie() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app bowtie "$@"; }
+bowtieBuild() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app bowtie-build "$@"; }
+samtools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app samtools "$@"; }
+bedtools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app bedtools "$@"; }
+#@ bigBedToBed() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app bigBedToBed "$@"; }
+bedToBigBed() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app bedToBigBed "$@"; }
+parallel() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app parallel "$@"; }
+parsort() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app parsort "$@"; }
+minimap2() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}basicTools.app minimap2 "$@"; }
+bwa() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bwa "$@" ; }
+bcftools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bcftools "$@" ; }
+bgzip() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bgzip "$@" ; }
+star() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app STAR "$@" ; }
+deepTools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app deeptools "$@" ; }
+bigWigToWig() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bigWigToWig "$@" ; }
+bigWigToBedGraph() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bigWigToBedGraph "$@" ; }
+regtools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app regtools "$@" ; }
+paftools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app k8 /usr/bin/paftools.js "$@" ; }
+bedparse() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}basicTools.app bedparse "$@" ; }
+
+#genome_evaluation
+plotsr() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}genome_evaluation.app plotsr "$@"; }
+syri() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}genome_evaluation.app syri "$@"; }
+GAEP() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}genome_evaluation.app /install/GAEP/gaep "$@"; }
+bcftools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}genome_evaluation.app bcftools "$@"; }
+#QUAST
+quast() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}quast.app python3 /quast/quast.py "$@"; }
+
+#RagTag
+nucmer() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}ragtag.app nucmer "$@"; }
+deltaFilter() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}ragtag.app delta-filter "$@"; }
+showCoords() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}ragtag.app show-coords "$@"; }
+
+#R
+pafCoordsDotPlotly() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app /install/dotPlotly//pafCoordsDotPlotly.R "$@"; }
+#@ R() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app R "$@"; }
+#@ Rscript() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app Rscript "$@"; }
+
+
+#tools in repeatmasker
+blat() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}repeatmasker.app blat "$@"; }
+
+
+#rtg-tools
+rtg() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}rtg-tools.app rtg "$@" ; }
+
+#clair3
+clair3() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp   ${APPTAINERdir}clair3.app /opt/bin/run_clair3.sh "$@" ; }
+
+#pepper-deepvariant
+pepper_deepvariant() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp -B /usr/lib/locale/ ${APPTAINERdir}pepper-deepvariant.app run_pepper_margin_deepvariant "$@" ; }
+
+#deepvariant
+deepvariant() { apptainer exec --nv --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp -B /usr/lib/locale/ ${APPTAINERdir}deepvariant.app  "$@" ; }
+
+#tools in sniffles
+sniffles() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}sniffles.app sniffles "$@" ; }
+
+#tools in sniffles
+cuteSV() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}cuteSV.app cuteSV "$@" ; }
+
+#tools in busco
+busco() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}busco.app busco "$@" ; }
+
+#tools in HiC_tools
+pairtools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}HiC_tools.app pairtools "$@" ; }
+cooler() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}HiC_tools.app cooler "$@" ; }
+cooltools() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}HiC_tools.app cooltools "$@" ; }
+
+
+set +a

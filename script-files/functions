@@ -1,0 +1,93 @@
+#!/bin/bash
+#set -a to automatically export all functions
+set -a
+
+#*functions for download and demux
+#download, convert to sam and split the files
+combinVCF() {
+  assemblyFILE=$1
+  locTMP=$2
+
+  nASSEMBLY=$(wc -l ${assemblyFILE} | cut -f 1 -d ' ')
+
+  #copy over reference genome data
+  echo ANN > ${locTMP}merged.vcfstats.txt
+  cat ${locTMP}dm6/dm6.vcfstats.txt |  tr -s ' ' | sed 's/ :/:/g;s/: /:/g' | tr ':' '\t' | cut -f 1  | tr ' ' '_' >>${locTMP}merged.vcfstats.txt
+
+  #process each assembly
+  for EXT in "" ".Siomi"; do
+    for currASSEMBLY in $(seq 0 $nASSEMBLY); do
+      if [[ $currASSEMBLY -eq 0 ]]; then
+        #if no assembly is provided, use the dm6 genome
+        currASSEMBLYname="dm6"
+
+      else
+        currASSEMBLYline=$(sed -n ${currASSEMBLY}p ${assemblyFILE})
+        currASSEMBLYname=$(echo $currASSEMBLYline |tr ' ' '\t' | cut -f 2)  #remove file extension
+      fi
+
+      cat ${locTMP}${currASSEMBLYname}/${currASSEMBLYname}.vcfstats${EXT}.txt |  tr -s ' ' | sed 's/ :/:/g;s/: /:/g' | tr ':' '\t' | tr ' ' '_' > ${locTMP}infile.tmp.txt
+      mawk  -v OFS="\t" -v currASSEMBLYname=$currASSEMBLYname${EXT}  -v INFILE=${locTMP}infile.tmp.txt '
+      BEGIN{
+        #read in  vcfstats file
+        while ((getline < INFILE) > 0) {
+          currFILE[$1] = $2
+          
+        }
+      }
+      {
+        if (NR==1){
+          print $0" ",currASSEMBLYname
+        }else{
+          if ( currFILE[$1] != "" ) {
+            print $0" ",currFILE[$1]
+          }else{
+            print $0" ",0
+          }
+        }
+      }' ${locTMP}merged.vcfstats.txt > ${locTMP}merged.vcfstats.tmp.txt
+      mv ${locTMP}merged.vcfstats.tmp.txt ${locTMP}merged.vcfstats.txt
+    done
+
+
+  done
+  cat ${locTMP}merged.vcfstats.txt | tr -s ' ' | sed 's/ : /~/g;s/: /~/g;s/ :/~/g' | tr ' ' '_' | tr '~' '\t' > ${OPENdir}SNV_ONT/merged.vcfstats.txt
+
+
+  mawk -v OFS="\t" '
+  {
+    if(NR==1){
+      for(i=1;i<=NF;i++){
+        ID[i]=$i
+      }
+    }
+    if($0 ~ "Insertion_Het"){
+      for(i=2;i<=NF;i++){
+        gsub(/[_()/]/, "~", $i)  
+        split($i,splitTAG,/~/)
+        INSERTION_HET[ID[i]]=splitTAG[3]
+        INSERTION_HOM[ID[i]]=splitTAG[4]
+      }
+    }
+    if($0 ~ "Deletion_Het/Hom_ratio"){
+      for(i=2;i<=NF;i++){
+        gsub(/[_()/]/, "~", $i)
+        split($i,splitTAG,/~/)
+        DELETION_HET[ID[i]]=splitTAG[3]
+        DELETION_HOM[ID[i]]=splitTAG[4]
+      }
+    }
+  }
+  END{
+    print "ID", "Insertion_Hom", "Deletion_Hom", "Insertion_Het", "Deletion_Het"
+    for(i=2;i<=NF;i++){
+      if(INSERTION_HET[ID[i]] != "" && DELETION_HET[ID[i]] != ""){
+        print ID[i],INSERTION_HOM[ID[i]],DELETION_HOM[ID[i]],INSERTION_HET[ID[i]],DELETION_HET[ID[i]]
+      }else{
+        print ID[i],0,0,0,0
+      }
+    }
+  }' ${OPENdir}SNV_ONT/merged.vcfstats.txt 
+  #> ${OPENdir}SNV_ONT/merged.vcfstats.summary.txt
+
+}
