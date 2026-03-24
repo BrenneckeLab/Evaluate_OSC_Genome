@@ -86,11 +86,16 @@ OSC_RNAseq_PE_NORM=2.5774
 #path to the 100nt uniqueness track for OSC genome (3MM)
 OSCuniqueness_100nt=
 
+#path to the INPUT data from the clonal cell line
+clonalChIPinput=
+
 #path to the dm6 reference genome sequence
 refFASTAseq=
 
 wt_sRNA=
 CHIPdataH3K9=
+CHIPdataH3K9_SIENSKI=
+CHIPdataH3K9_Saito=
 PacBio_SIOMI=
 TEconsensus=
 
@@ -338,17 +343,17 @@ APPTAINERdir=${TMP}apptainer/
 mkdir -p ${APPTAINERdir}
 cd ${APPTAINERdir}
 
-wget -O basicTools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/basicTools.app
-wget -O genome_evaluation.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/genome_evaluation.app
-wget -O ragtag.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/ragtag.app
-wget -O quast.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/quast.app
-wget -O AP_R.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/AP_R.app
-wget -O deepvariant.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/deepvariant.app
-wget -O rtg-tools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/rtg-tools.app
-wget -O sniffles.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/sniffles.app
-wget -O busco.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/busco.app
-wget -O HiC_tools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/HiC_tools.app
-wget -O repeatmasker.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2025_Handler_OSC-genome/Apptainer/repeatmasker.app
+wget -O basicTools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/basicTools.app
+wget -O genome_evaluation.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/genome_evaluation.app
+wget -O ragtag.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/ragtag.app
+wget -O quast.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/quast.app
+wget -O AP_R.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/AP_R.app
+wget -O deepvariant.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/deepvariant.app
+wget -O rtg-tools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/rtg-tools.app
+wget -O sniffles.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/sniffles.app
+wget -O busco.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/busco.app
+wget -O HiC_tools.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/HiC_tools.app
+wget -O repeatmasker.app https://brenneckelab.imba.oeaw.ac.at/Publication_Data/2026_Handler_OSC-genome/Apptainer/repeatmasker.app
 
 ###################################################################################################
 #submit main-run script
@@ -375,7 +380,7 @@ STAGE=$(echo $STAGE | tr '\t' '~' | tr ' ' '~')
 
 
 COMMAND=${SCRIPTdir}genomeEVAL_${analysisNAME}.sh
-VARI="OPENdir=${OPENdir},TMPdir=${TMPdir},LOG=${LOG},COMPUTING=${COMPUTING},DEBUG=${DEBUG},FORCE=${FORCE},SCRIPTdir=${SCRIPTdir},UTILITYdir=${UTILITYdir},APPTAINERdir=${APPTAINERdir},refFASTA=${refFASTA},assemblyNAME=${assemblyNAME},assemblyFASTA=${assemblyFASTA},refFASTAseq=${refFASTAseq},assemblyFILE=${assemblyFILE},analysisNAME=${analysisNAME},CHRsizes=${CHRsizes},ONT_DNA=${ONT_DNA},PacBio_SIOMI=${PacBio_SIOMI},ILLUMINA_DNAseq=${ILLUMINA_DNAseq},STAGE=${STAGE},Ychrom=${Ychrom},TEconsensus=${TEconsensus},wt_sRNA=${wt_sRNA},OSC_RNAseq_PE=${OSC_RNAseq_PE},HiCreads=${HiCreads},OSCuniqueness_100nt=${OSCuniqueness_100nt},CHIPdataH3K9=${CHIPdataH3K9},OSC_annotations=${OSC_annotations},OSC_RNAseq_PE_NORM=${OSC_RNAseq_PE_NORM}"
+VARI="OPENdir=${OPENdir},TMPdir=${TMPdir},LOG=${LOG},COMPUTING=${COMPUTING},DEBUG=${DEBUG},FORCE=${FORCE},SCRIPTdir=${SCRIPTdir},UTILITYdir=${UTILITYdir},APPTAINERdir=${APPTAINERdir},refFASTA=${refFASTA},assemblyNAME=${assemblyNAME},assemblyFASTA=${assemblyFASTA},assemblyFILE=${assemblyFILE},analysisNAME=${analysisNAME},CHRsizes=${CHRsizes},ONT_DNA=${ONT_DNA},PacBio_SIOMI=${PacBio_SIOMI},ILLUMINA_DNAseq=${ILLUMINA_DNAseq},STAGE=${STAGE},Ychrom=${Ychrom},TEconsensus=${TEconsensus},wt_sRNA=${wt_sRNA},OSC_RNAseq_PE=${OSC_RNAseq_PE},HiCreads=${HiCreads},OSCuniqueness_100nt=${OSCuniqueness_100nt},CHIPdataH3K9=${CHIPdataH3K9},OSC_annotations=${OSC_annotations},OSC_RNAseq_PE_NORM=${OSC_RNAseq_PE_NORM},clonalChIPinput=${clonalChIPinput},CHIRdataH3K9_SIENSKI=${CHIPdataH3K9_SIENSKI},CHIPdataH3K9_Saito=${CHIPdataH3K9_Saito}"
 
 
 if [[ $COMPUTING == C ]]; then

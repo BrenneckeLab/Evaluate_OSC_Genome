@@ -61,6 +61,8 @@ seqkit fx2tab ${wt_sRNA} |
     for(i=1; i<=splitNAME[4]; i++) print 
   }'> ${locTMP}TEsRNA.bed
 
+rm -rf ${TEconsensus}.fai
+samtools faidx ${TEconsensus}
 bedtools genomecov -strand + -d -i ${locTMP}TEsRNA.bed -g ${TEconsensus}.fai | LC_COLLATE=C sort -k1,1 -k2,2n |  mawk -v OFS="\t" '{print $1":"$2,$3}' > ${locTMP}TEcoverage.sRNA.sense.bedgraph
 bedtools genomecov -strand - -d -i ${locTMP}TEsRNA.bed -g ${TEconsensus}.fai | LC_COLLATE=C sort -k1,1 -k2,2n | mawk -v OFS="\t" '{print $1":"$2,-$3}' > ${locTMP}TEcoverage.sRNA.antisense.bedgraph
 

@@ -222,6 +222,33 @@ gunzip -c ${locTMP}output.vcf.gz |
     }' > ${OPENdir}/SNV_Illumina/${currASSEMBLYname}_SNPs_along_chromosome.txt
 
 
+###################################################################################################
+#determine LOH
+
+cat ${OPENdir}/SNV_Illumina/${currASSEMBLYname}_SNPs_per_1kb.het.txt | 
+  mawk '
+  BEGIN{
+    print "CHR","START","STOP","LOH_ID"
+  }
+  {
+    if(NR==1){
+      CHR=$1
+      START=$2
+      STOP=$3
+      COUNT=$4
+    }
+    if($1 == CHR && $4 < 5){
+      STOP=$3
+    }else{
+        if(STOP - START >500000){
+           N++
+           print CHR,START,STOP,"LOH_"N"_"STOP-START
+        }
+      CHR=$1
+      START=$2
+      STOP=$3
+    }
+  }' | tr ' ' '\t'  > ${OPENdir}/SNV_Illumina/${currASSEMBLYname}_LOH.bed
 
 
 ###################################################################################################

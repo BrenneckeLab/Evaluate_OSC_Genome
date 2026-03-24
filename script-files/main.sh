@@ -121,6 +121,8 @@ if [[ ! -s ${TMPdir}illumina_2.fa && ! -z ${ILLUMINA_DNAseq} ]]; then
 fi
 
 
+
+
 ###################################################################################################
 #run quast to evaluate genome
 
@@ -193,7 +195,8 @@ if [[ ( -z $STAGE || $STAGE == *VARIANTS_ONT* || $STAGE == *VARIANTS_ILLUMINA ) 
 
     if [[ $COMPUTING == C ]]; then
       DEPEND=""
-      DEPEND=$(sbatch --array=3-$nASSEMBLYdouble --parsable $COMMAND ${VARI},nASSEMBLY=$nASSEMBLY )
+#!      DEPEND=$(sbatch --array=0-$nASSEMBLYdouble --parsable $COMMAND ${VARI},nASSEMBLY=$nASSEMBLY )
+      DEPEND=$(sbatch --array=0-$nASSEMBLY --parsable $COMMAND ${VARI},nASSEMBLY=$nASSEMBLY )
 
       #collect all VCFs
       sbatch --dependency=afterany:$DEPEND --parsable --wrap="
@@ -228,7 +231,7 @@ if [[ ( -z $STAGE || $STAGE == *VARIANTS_ONT* || $STAGE == *VARIANTS_ILLUMINA ) 
       sbatch --array=0-$nASSEMBLY --parsable $COMMAND ${VARI}
       #@ sbatch --parsable $COMMAND ${VARI},SLURM_ARRAY_TASK_ID=0
     else
-      $COMMAND ${VARI},nASSEMBLY=$nASSEMBLY,SLURM_ARRAY_TASK_ID=0
+      $COMMAND ${VARI},nASSEMBLY=$nASSEMBLY,SLURM_ARRAY_TASK_ID=1
     #@   source ${SCRIPTdir}functions
     #@  combinVCF ${assemblyFILE} ${TMPdir}SNV/SNV_Illumina/
     fi

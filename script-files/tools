@@ -43,7 +43,7 @@ showCoords() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /sc
 #R
 pafCoordsDotPlotly() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app /install/dotPlotly//pafCoordsDotPlotly.R "$@"; }
 #@ R() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app R "$@"; }
-#@ Rscript() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app Rscript "$@"; }
+Rscript() { apptainer exec --cleanenv --contain -B /groups -B /scratch -B /scratch-cbe -B ${TMPdir}:/tmp  ${APPTAINERdir}AP_R.app Rscript "$@"; }
 
 
 #tools in repeatmasker

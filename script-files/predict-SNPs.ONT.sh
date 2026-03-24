@@ -29,13 +29,14 @@ topOPENdir=$OPENdir
 locTMPtop=${TMPdir}SNV/
 
 #create directories
-mkdir $locTMPtop
+mkdir -p $locTMPtop
+mkdir -p ${OPENdir}/SNV_ONT/
 
 #load tools
 source ${SCRIPTdir}tools
 
 
-if [[ $SLURM_ARRAY_TASK_ID -ge $nASSEMBLY ]]; then
+if [[ $SLURM_ARRAY_TASK_ID -gt $nASSEMBLY ]]; then
   EXT=.Siomi
   SLURM_ARRAY_TASK_ID=$(( $SLURM_ARRAY_TASK_ID - $nASSEMBLY ))
   READS=${PacBio_SIOMI}
@@ -76,6 +77,7 @@ if [[ ! -s ${locTMP}reads.mapped${EXT}.bam ]]; then
   if [[ $COMPUTING == C ]]; then
     
     sbatch --parsable --wait --job-name=minimap_variations -o "%x.o.%A-%a.txt" -e "%x.e.%A-%a.txt" --cpus-per-task=20 --mem=60g --wrap="
+        set -ux
         THREADS=\$(( \$SLURM_CPUS_PER_TASK * 2 ))
         APPTAINERdir=$APPTAINERdir
         TMPdir=$TMPdir
@@ -94,7 +96,7 @@ if [[ ! -s ${locTMP}reads.mapped${EXT}.bam ]]; then
 fi
 
 #sniffles
-if [[ -s ${locTMP}SV.sniffles${EXT}vcf ]]; then
+if [[ ! -s ${locTMP}SV.sniffles${EXT}.vcf ]]; then
   if [[ $COMPUTING == C ]]; then
 
     sbatch --wait  --job-name=SV_sniffles -o "%x.o.%A-%a.txt" -e "%x.e.%A-%a.txt" --cpus-per-task=20 --mem=50g --qos=short --time=2:00:00 --wrap="
@@ -136,19 +138,8 @@ minimap2 --paf-no-hit ${TEconsensus} ${locTMP}SVs.fasta > ${locTMP}variants_alig
 
 
 #! inverting deletion/insertion as I want to state their status in the OSC genome but for later stages I had to use OSC as the reference genome
-echo TYPE noTE TE OSCzygo | tr ' ' '\t' > ${OPENdir}/SNV_ONT/TE_summary.${ASSEMBLYname}.txt
+echo TYPE noTE TE OSCzygo | tr ' ' '\t' > ${OPENdir}/SNV_ONT/TE_summary.${currASSEMBLYname}.txt
 
-mawk -v OFS="\t" '
-{
-  if( $4-$3 > $2*0.8) {
-    X[$1]=$6 
-  }
-}
-END{
-  for(i in X) {
-    print i,X[i]
-  }
-}' ${locTMP}variants_aligned_to_TE.paf > ${locTMP}SV_TE.txt
 
 mawk -v OFS="\t" '
 {
@@ -187,6 +178,44 @@ END{
 }' ${locTMP}variants_aligned_to_TE.merge.bed > ${locTMP}SV_TE.txt
 
 
+#determine TEs in LOH if file is available
+if [[ -s ${OPENdir}/SNV_Illumina/${currASSEMBLYname}_LOH.bed ]]; then
+
+  mawk -v OFS="\t" '
+  {
+    if($2 !="noTE" && $4 > 5000){
+      print $1,$2 
+    }
+  }' ${locTMP}SV_TE.txt  > ${locTMP}onlyTE-SV.txt
+
+  mawk -v OFS="\t" -v TE_SVs=${locTMP}onlyTE-SV.txt '
+    BEGIN{
+      while( getline < TE_SVs ) {
+        TE[$1]=$2
+      }
+    }
+    {
+      if(TE[$3] != "") {
+        print $1,$2,$2+1, TE[$3] 
+      }
+    }' ${locTMP}SV.sniffles.vcf >  ${locTMP}onlyTE-SV.bed
+
+  bedtools intersect -a ${OPENdir}/SNV_Illumina/${currASSEMBLYname}_LOH.bed -b ${locTMP}onlyTE-SV.bed -wao | 
+    mawk -v OFS="\t" '
+    BEGIN{
+      print "TE","COUNT"
+    }
+    {
+      if($5 != ".") {
+        X[$8]++
+      }
+    }
+    END{
+      for(i in X) {
+        print i,X[i]
+      }
+    }' >  ${OPENdir}/SNV_ONT/${currASSEMBLYname}_LOH_TE.txt
+fi
 
 ###################################################################################################
 #generate data for the chromosome-plot
